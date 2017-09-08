@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>exec wasm code</title>
+    <meta charset="UTF-8">
+</head>
+
+<style>
+    html, body {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+    }
+    #canvasContainer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    #appName {
+        user-select: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        font-size: 2em;
+        color: #222;
+        animation: blink 5s infinite alternate;
+    }
+    .maze-canvas {
+        animation: appear 1s ease;
+    }
+    @keyframes appear {
+        0% {opacity: 0}
+        100% {opacity: 1}
+    }
+    @keyframes blink {
+        0% {opacity: 0}
+        50% {opacity: 0}
+        100% { opacity: 0.5}
+    }
+</style>
+<body>
+    <div id="canvasContainer"></div>
+    <div id="appName">maze</div>
+    <script src="mazeCanvas.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
