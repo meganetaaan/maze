@@ -1,0 +1,10 @@
+{
+    "eslint.options": {
+        "extensions": [".js", ".vue"]
+    },
+    // Run the linter on save (onSave) or on type (onType)
+	"eslint.run": "onSave",
+	// Turns auto fix on save on or off.
+	"eslint.autoFixOnSave": true
+    // "javascript.format.insertSpaceBeforeFunctionParenthesis": true
+}
