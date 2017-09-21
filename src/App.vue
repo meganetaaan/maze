@@ -4,7 +4,6 @@
       <span>Vue.js PWA</span>
     </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
       <maze></maze>
     </main>
   </div>
@@ -29,6 +28,9 @@ body {
 }
 
 #app {
+  position: absolute;
+  height: 100%;
+  width: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -37,7 +39,7 @@ body {
 
 main {
   text-align: center;
-  margin-top: 40px;
+  height: calc(100% - 56px)
 }
 
 header {
