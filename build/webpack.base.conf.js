@@ -7,20 +7,19 @@ function resolve(dir) {
   return path.join(__dirname, "..", dir);
 }
 
+var publicPath =
+  process.env.NODE_ENV === "production"
+    ? config.build.assetsPublicPath
+    : config.dev.assetsPublicPath;
+
 module.exports = {
-  node: {
-    fs: 'empty'
-  },
   entry: {
     app: "./src/main.js"
   },
   output: {
     path: config.build.assetsRoot,
     filename: "[name].js",
-    publicPath:
-      process.env.NODE_ENV === "production"
-        ? config.build.assetsPublicPath
-        : config.dev.assetsPublicPath
+    publicPath: publicPath
   },
   resolve: {
     extensions: [".js", ".vue", ".json"],
@@ -33,9 +32,9 @@ module.exports = {
     rules: [
       {
         test: /\.rs$/,
-        loader: 'rust-wasm-loader',
+        loader: "rust-wasm-loader",
         options: {
-          path: 'wasm/',
+          path: publicPath, //"/maze/",
           release: true
         }
       },
@@ -85,7 +84,7 @@ module.exports = {
     ]
   },
   externals: {
-    'fs': true,
-    'path': true
+    fs: true,
+    path: true
   }
 };
