@@ -1,5 +1,9 @@
 <template>
   <div class="maze">
+    <div class="maze-settings">
+      <input v-model="width" />
+      <input v-model="height" />
+    </div>
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
   </div>
 </template>
@@ -7,12 +11,17 @@
 <script>
 import _ from 'lodash'
 class Renderer {
-  constructor(ctx, unitWidth, unitHeight, offset) {
+  constructor (ctx, unitWidth, unitHeight, offset) {
     this.ctx = ctx
     this.unitWidth = unitWidth
     this.unitHeight = unitHeight
     this.offset = offset
     this.wallWidth = 2
+  }
+
+  // TODO: 境界を見直す
+  clear (w, h) {
+    this.ctx.clearRect(0, 0, w, h)
   }
 
   setColor (fill, stroke) {
@@ -23,7 +32,7 @@ class Renderer {
   beginPath () {
     this.ctx.beginPath()
   }
-  
+ 
   stroke () {
     this.ctx.stroke()
   }
@@ -33,7 +42,7 @@ class Renderer {
     const cx = x * this.unitWidth + this.unitWidth / 2 + this.offset
     const cy = y * this.unitHeight + this.unitHeight / 2 + this.offset
     const r = Math.min(this.unitWidth, this.unitHeight) / 2 - this.wallWidth
-    console.log(`drawing circle: (${cx}, ${cy}, ${r})`)
+    // console.log(`drawing circle: (${cx}, ${cy}, ${r})`)
     this.ctx.arc(cx, cy, r, 0, 2 * Math.PI)
     this.ctx.fill()
   }
@@ -43,7 +52,7 @@ class Renderer {
     const fromY = this.offset + y1 * this.unitHeight
     const toX = this.offset + x2 * this.unitWidth
     const toY = this.offset + y2 * this.unitHeight
-    console.log(`drawing line: from(${fromX}, ${fromY}) to(${toX}, ${toY})`)
+    // console.log(`drawing line: from(${fromX}, ${fromY}) to(${toX}, ${toY})`)
     this.ctx.moveTo(fromX, fromY)
     this.ctx.lineTo(toX, toY)
   }
@@ -62,8 +71,8 @@ export default {
     }
   },
   mounted (vm) {
-    this.height = this.$el.offsetHeight
-    this.width = this.$el.offsetWidth
+    this.height = 50// this.$el.offsetHeight
+    this.width = 50// this.$el.offsetWidth
     this.renderer = new Renderer(
       this.$refs.mazeCanvas.getContext('2d'),
       this.cellWidth,
@@ -100,7 +109,7 @@ export default {
     },
     bondV () {
       // this.renderMaze()
-      _.debounce(this.renderMaze, 300)()
+      // _.debounce(this.renderMaze, 300)()
     }
   },
   methods: {
@@ -113,14 +122,15 @@ export default {
       }
     },
     renderMaze () {
-      const {renderer, lx, ly, bondH, bondV, cellWidth, cellHeight} = this
+      const {renderer, lx, ly, bondH, bondV} = this
 
+      renderer.clear(this.width, this.height)
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
-      renderer.setColor("#FF9800", "#222")
+      renderer.setColor('#FF9800', '#222')
       renderer.drawCircle(0, 0)
-      renderer.setColor("#4CAF50", "#222")
+      renderer.setColor('#4CAF50', '#222')
       renderer.drawCircle(lx - 1, ly - 1)
-      renderer.setColor(null, "#222")
+      renderer.setColor(null, '#222')
       // 縦線の描画
 
       renderer.beginPath()
@@ -158,5 +168,10 @@ export default {
     height: 100%;
     min-height: 50px;
     min-width: 50px;
+  }
+  .maze-settings {
+    position: absolute;
+    left: 0px;
+    top: 0px;
   }
 </style>

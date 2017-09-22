@@ -22,7 +22,7 @@ const store = new Vuex.Store({
       return state.bonds.slice(0, (state.lx + 1) * state.ly)
     },
     getBondV: state => () => {
-      return state.bonds.slice(-(state.lx + 1) * state.ly)
+      return state.bonds.slice(-state.lx * (state.ly + 1))
     }
   },
   actions: {
