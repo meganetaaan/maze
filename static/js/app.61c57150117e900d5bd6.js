@@ -522,7 +522,7 @@ var Module;if(!Module)Module=(typeof Module!=="undefined"?Module:null)||{};var m
           });
         }
       }
-    })({"wasmBinaryFile":"wasm/maze.wasm","ENVIRONMENT":"WEB"})
+    })({"wasmBinaryFile":"/maze.wasm","ENVIRONMENT":"WEB"})
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(1).Buffer))
 
 /***/ }),
@@ -753,4 +753,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[124]);
-//# sourceMappingURL=app.edc85246106342608883.js.map
+//# sourceMappingURL=app.61c57150117e900d5bd6.js.map
