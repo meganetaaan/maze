@@ -71,8 +71,8 @@ export default {
     }
   },
   mounted (vm) {
-    this.height = 50// this.$el.offsetHeight
-    this.width = 50// this.$el.offsetWidth
+    this.height = this.$el.offsetHeight
+    this.width = this.$el.offsetWidth
     this.renderer = new Renderer(
       this.$refs.mazeCanvas.getContext('2d'),
       this.cellWidth,
@@ -85,7 +85,7 @@ export default {
       return this.bondH.length > 0 || this.bondV.length > 0
     },
     lx () {
-      return Math.max(1, Math.ceil((this.width - this.margin * 2) / this.cellWidth))
+      return Math.max(1, Math.floor((this.width - this.margin * 2) / this.cellWidth))
     },
     ly () {
       return Math.max(1, Math.floor((this.height - this.margin * 2) / this.cellHeight))
@@ -168,6 +168,7 @@ export default {
     height: 100%;
     min-height: 50px;
     min-width: 50px;
+    overflow: hidden;
   }
   .maze-settings {
     position: absolute;
