@@ -1,9 +1,5 @@
 <template>
   <div class="maze">
-    <div class="maze-settings">
-      <input v-model="width" />
-      <input v-model="height" />
-    </div>
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
   </div>
 </template>
@@ -32,7 +28,7 @@ class Renderer {
   beginPath () {
     this.ctx.beginPath()
   }
- 
+
   stroke () {
     this.ctx.stroke()
   }
@@ -42,7 +38,6 @@ class Renderer {
     const cx = x * this.unitWidth + this.unitWidth / 2 + this.offset
     const cy = y * this.unitHeight + this.unitHeight / 2 + this.offset
     const r = Math.min(this.unitWidth, this.unitHeight) / 2 - this.wallWidth
-    // console.log(`drawing circle: (${cx}, ${cy}, ${r})`)
     this.ctx.arc(cx, cy, r, 0, 2 * Math.PI)
     this.ctx.fill()
   }
@@ -52,7 +47,6 @@ class Renderer {
     const fromY = this.offset + y1 * this.unitHeight
     const toX = this.offset + x2 * this.unitWidth
     const toY = this.offset + y2 * this.unitHeight
-    // console.log(`drawing line: from(${fromX}, ${fromY}) to(${toX}, ${toY})`)
     this.ctx.moveTo(fromX, fromY)
     this.ctx.lineTo(toX, toY)
   }
@@ -65,8 +59,8 @@ export default {
       renderer: null,
       width: null,
       height: null,
-      cellWidth: 10,
-      cellHeight: 10,
+      cellWidth: 20,
+      cellHeight: 20,
       margin: 5
     }
   },
@@ -105,23 +99,22 @@ export default {
       this.updateMaze()
     },
     bondH () {
-      _.debounce(this.renderMaze, 300)()
+      this.renderMaze()
     },
     bondV () {
-      // this.renderMaze()
-      // _.debounce(this.renderMaze, 300)()
+      this.renderMaze()
     }
   },
   methods: {
-    updateMaze () {
+    updateMaze: _.debounce(function () {
       if (this.lx > 0 && this.ly > 0) {
         this.$store.dispatch('update', {
           lx: this.lx,
           ly: this.ly
         })
       }
-    },
-    renderMaze () {
+    }, 300),
+    renderMaze: _.debounce(function () {
       const {renderer, lx, ly, bondH, bondV} = this
 
       renderer.clear(this.width, this.height)
@@ -131,8 +124,8 @@ export default {
       renderer.setColor('#4CAF50', '#222')
       renderer.drawCircle(lx - 1, ly - 1)
       renderer.setColor(null, '#222')
-      // 縦線の描画
 
+      // 縦線の描画
       renderer.beginPath()
       for (let i = 0; i < bondH.length; i++) {
         if (bondH[i] !== 0) {
@@ -144,6 +137,7 @@ export default {
         const y2 = y1 + 1
         renderer.drawLine(x1, y1, x2, y2)
       }
+
       // 横線の描画
       for (let j = 0; j < bondV.length; j++) {
         if (bondV[j] !== 0) {
@@ -156,7 +150,7 @@ export default {
         renderer.drawLine(x1, y1, x2, y2)
       }
       renderer.stroke()
-    }
+    }, 300)
   }
 }
 </script>
@@ -169,10 +163,5 @@ export default {
     min-height: 50px;
     min-width: 50px;
     overflow: hidden;
-  }
-  .maze-settings {
-    position: absolute;
-    left: 0px;
-    top: 0px;
   }
 </style>

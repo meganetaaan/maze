@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <span>Vue.js PWA</span>
+      <span>Maze</span>
     </header>
     <main>
       <maze></maze>
@@ -10,13 +10,11 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
 import Maze from './components/Maze'
 
 export default {
   name: 'app',
   components: {
-    Hello,
     Maze
   }
 }
