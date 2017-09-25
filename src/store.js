@@ -4,7 +4,7 @@ import wasm from './rust/maze.rs'
 
 let getMaze = null
 let wasmArrayToJs = null
-let seed = 0
+let seed = Date.now()
 
 Vue.use(Vuex)
 const OPERATION = {
