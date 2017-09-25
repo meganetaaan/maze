@@ -1,0 +1,10 @@
+[package]
+name = "maze"
+version = "0.1.0"
+authors = ["Shinya Ishikawa <ishikawa.s.1027@gmail.com>"]
+
+[[bin]]
+name = "maze"
+path = "rust/maze.rs"
+
+[dependencies]
