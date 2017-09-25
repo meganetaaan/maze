@@ -37,7 +37,7 @@ module.exports = path;
 
 var getMaze = null;
 var wasmArrayToJs = null;
-var seed = 0;
+var seed = Date.now();
 
 __WEBPACK_IMPORTED_MODULE_3_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */]);
 var OPERATION = {
@@ -571,4 +571,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[124]);
-//# sourceMappingURL=app.0bf486b3ecdb1c5617fc.js.map
+//# sourceMappingURL=app.9b0152e3f617bf690b46.js.map
