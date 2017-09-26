@@ -1,5 +1,7 @@
 <template>
   <div class="maze">
+    <input v-model="x"></input>
+    <div>{{x}}</div>
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
   </div>
 </template>
@@ -61,7 +63,8 @@ export default {
       height: null,
       cellWidth: 20,
       cellHeight: 20,
-      margin: 5
+      margin: 5,
+      x: 0
     }
   },
   mounted (vm) {
@@ -89,6 +92,9 @@ export default {
     },
     bondV () {
       return this.$store.getters.getBondV()
+    },
+    user () {
+      return this.$store.state.user
     }
   },
   watch: {
@@ -103,6 +109,9 @@ export default {
     },
     bondV () {
       this.renderMaze()
+    },
+    x () {
+      this.$store.dispatch('moveUserTo', {x: this.x, y: 0})
     }
   },
   methods: {
