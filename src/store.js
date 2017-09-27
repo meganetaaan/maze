@@ -38,9 +38,34 @@ const store = new Vuex.Store({
     },
     async movePlayerTo ({ commit }, payload) {
       const id = payload.id
-      const x = payload.x
-      const y = payload.y
-      commit(OPERATION.SET_PLAYER, {id, x, y})
+      const toX = payload.x
+      const toY = payload.y
+
+      const fromX = this.state.player.x
+      const fromY = this.state.player.y
+      const bondH = this.getters.getBondH()
+      const bondV = this.getters.getBondV()
+
+      for (let i = Math.min(fromX, toX); i < Math.max(fromX, toX); i++) {
+        // 例： from(0, 0) to(1, 0)
+        let idx = ((this.state.lx + 1) * fromY) + i + 1
+
+        console.debug(`scanningX: (${i}, ${fromY}) to (${i + 1}, ${fromY})`)
+        console.debug(`${idx}=>${bondH[idx]}`)
+        if (bondH[idx] === 0) {
+          return
+        }
+      }
+      for (let j = Math.min(fromY, toY); j < Math.max(fromY, toY); j++) {
+        let idx = (this.state.lx * (j + 1) + fromX)
+
+        console.debug(`scanningY: (${fromX}, ${j}) to (${fromX}, ${j + 1})`)
+        console.debug(`${idx}=>${bondV[idx]}`)
+        if (bondV[idx] === 0) {
+          return
+        }
+      }
+      commit(OPERATION.SET_PLAYER, {id, x: toX, y: toY})
     },
     async update ({ commit }, payload) {
       if (getMaze == null) {
