@@ -2,6 +2,7 @@
   <div id="app">
     <header>
       <span>Maze</span>
+      <mazeControl></mazeControl>
     </header>
     <main>
       <maze></maze>
@@ -11,11 +12,13 @@
 
 <script>
 import Maze from './components/Maze'
+import MazeControl from './components/MazeControl'
 
 export default {
   name: 'app',
   components: {
-    Maze
+    Maze,
+    MazeControl
   }
 }
 </script>
@@ -57,5 +60,11 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+mazeControl {
+  position: absolute;
+  top: 15px;
+  left: 120px;
 }
 </style>

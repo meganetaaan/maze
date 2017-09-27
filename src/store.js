@@ -9,7 +9,7 @@ let seed = Date.now()
 Vue.use(Vuex)
 const OPERATION = {
   SET_MAZE: 'setMaze',
-  SET_USER: 'setUser'
+  SET_PLAYER: 'setPlayer'
 }
 
 const store = new Vuex.Store({
@@ -17,7 +17,7 @@ const store = new Vuex.Store({
     lx: null,
     ly: null,
     bonds: [],
-    user: {
+    player: {
       id: '00',
       x: 0,
       y: 0
@@ -32,15 +32,15 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    async moveUserBy (arg, payload) {
-      const param = { x: this.state.user.x + payload.x, y: this.state.user.y + payload.y }
-      await this.moveUserTo(arg, param)
+    async movePlayerBy (arg, payload) {
+      const param = { x: this.state.player.x + payload.x, y: this.state.player.y + payload.y }
+      await this.movePlayerTo(arg, param)
     },
-    async moveUserTo ({ commit }, payload) {
+    async movePlayerTo ({ commit }, payload) {
       const id = payload.id
       const x = payload.x
       const y = payload.y
-      commit(OPERATION.SET_USER, {id, x, y})
+      commit(OPERATION.SET_PLAYER, {id, x, y})
     },
     async update ({ commit }, payload) {
       if (getMaze == null) {
@@ -85,9 +85,9 @@ const store = new Vuex.Store({
         Vue.set(state.bonds, i, payload.bonds[i])
       }
     },
-    setUser (state, payload) {
-      state.user.x = payload.x
-      state.user.y = payload.y
+    setPlayer (state, payload) {
+      state.player.x = payload.x
+      state.player.y = payload.y
     }
   }
 })

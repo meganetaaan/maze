@@ -1,8 +1,7 @@
 <template>
   <div class="maze">
-    <input v-model="x"></input>
-    <div>{{x}}</div>
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
+    <canvas ref="playerCanvas" :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -76,6 +75,12 @@ export default {
       this.cellHeight,
       this.margin
     )
+    this.playerRenderer = new Renderer(
+      this.$refs.playerCanvas.getContext('2d'),
+      this.cellWidth,
+      this.cellHeight,
+      this.margin
+    )
   },
   computed: {
     ready () {
@@ -93,8 +98,8 @@ export default {
     bondV () {
       return this.$store.getters.getBondV()
     },
-    user () {
-      return this.$store.state.user
+    player () {
+      return this.$store.state.player
     }
   },
   watch: {
@@ -110,8 +115,8 @@ export default {
     bondV () {
       this.renderMaze()
     },
-    x () {
-      this.$store.dispatch('moveUserTo', {x: this.x, y: 0})
+    'player.x' () {
+      this.renderPlayer()
     }
   },
   methods: {
@@ -123,13 +128,19 @@ export default {
         })
       }
     }, 300),
+    renderPlayer: function () {
+      const {playerRenderer, player} = this
+      playerRenderer.clear(this.width, this.height)
+      playerRenderer.ctx = this.$refs.playerCanvas.getContext('2d')
+      playerRenderer.setColor('#FF9800', '#222')
+      playerRenderer.drawCircle(player.x, player.y)
+    },
+    // TODO: make more declarative
     renderMaze: _.debounce(function () {
       const {renderer, lx, ly, bondH, bondV} = this
 
       renderer.clear(this.width, this.height)
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
-      renderer.setColor('#FF9800', '#222')
-      renderer.drawCircle(0, 0)
       renderer.setColor('#4CAF50', '#222')
       renderer.drawCircle(lx - 1, ly - 1)
       renderer.setColor(null, '#222')
@@ -167,10 +178,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .maze {
+    position: absolute;
     width: 100%;
     height: 100%;
     min-height: 50px;
     min-width: 50px;
     overflow: hidden;
+  }
+  canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 </style>
