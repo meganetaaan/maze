@@ -18,14 +18,14 @@ module.exports = path;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_array_from__ = __webpack_require__(127);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_array_from___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_array_from__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_array_from__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_array_from___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_array_from__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__ = __webpack_require__(130);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(256);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(257);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rust_maze_rs__ = __webpack_require__(243);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rust_maze_rs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__rust_maze_rs__);
 
@@ -41,14 +41,20 @@ var seed = Date.now();
 
 __WEBPACK_IMPORTED_MODULE_3_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */]);
 var OPERATION = {
-  SET_MAZE: 'setMaze'
+  SET_MAZE: 'setMaze',
+  SET_PLAYER: 'setPlayer'
 };
 
 var store = new __WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */].Store({
   state: {
     lx: null,
     ly: null,
-    bonds: []
+    bonds: [],
+    player: {
+      id: '00',
+      x: 0,
+      y: 0
+    }
   },
   getters: {
     getBondH: function getBondH(state) {
@@ -63,18 +69,122 @@ var store = new __WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */].Store({
     }
   },
   actions: {
-    update: function update(_ref, payload) {
+    movePlayerBy: function movePlayerBy(arg, payload) {
       var _this = this;
 
-      var commit = _ref.commit;
-      return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
-        var moduleParam, module, lx, ly, buf;
-        return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
+      return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee() {
+        var param;
+        return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                param = { x: _this.state.player.x + payload.x, y: _this.state.player.y + payload.y };
+                _context.next = 3;
+                return _this.movePlayerTo(arg, param);
+
+              case 3:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this);
+      }))();
+    },
+    movePlayerTo: function movePlayerTo(_ref, payload) {
+      var _this2 = this;
+
+      var commit = _ref.commit;
+      return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee2() {
+        var id, toX, toY, fromX, fromY, bondH, bondV, i, idx, j, _idx;
+
+        return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                id = payload.id;
+                toX = payload.x;
+                toY = payload.y;
+                fromX = _this2.state.player.x;
+                fromY = _this2.state.player.y;
+                bondH = _this2.getters.getBondH();
+                bondV = _this2.getters.getBondV();
+                i = Math.min(fromX, toX);
+
+              case 8:
+                if (!(i < Math.max(fromX, toX))) {
+                  _context2.next = 17;
+                  break;
+                }
+
+                // 例： from(0, 0) to(1, 0)
+                idx = (_this2.state.lx + 1) * fromY + i + 1;
+
+
+                console.debug('scanningX: (' + i + ', ' + fromY + ') to (' + (i + 1) + ', ' + fromY + ')');
+                console.debug(idx + '=>' + bondH[idx]);
+
+                if (!(bondH[idx] === 0)) {
+                  _context2.next = 14;
+                  break;
+                }
+
+                return _context2.abrupt('return');
+
+              case 14:
+                i++;
+                _context2.next = 8;
+                break;
+
+              case 17:
+                j = Math.min(fromY, toY);
+
+              case 18:
+                if (!(j < Math.max(fromY, toY))) {
+                  _context2.next = 27;
+                  break;
+                }
+
+                _idx = _this2.state.lx * (j + 1) + fromX;
+
+
+                console.debug('scanningY: (' + fromX + ', ' + j + ') to (' + fromX + ', ' + (j + 1) + ')');
+                console.debug(_idx + '=>' + bondV[_idx]);
+
+                if (!(bondV[_idx] === 0)) {
+                  _context2.next = 24;
+                  break;
+                }
+
+                return _context2.abrupt('return');
+
+              case 24:
+                j++;
+                _context2.next = 18;
+                break;
+
+              case 27:
+                commit(OPERATION.SET_PLAYER, { id: id, x: toX, y: toY });
+
+              case 28:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, _this2);
+      }))();
+    },
+    update: function update(_ref2, payload) {
+      var _this3 = this;
+
+      var commit = _ref2.commit;
+      return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee3() {
+        var moduleParam, module, lx, ly, buf;
+        return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
                 if (!(getMaze == null)) {
-                  _context.next = 6;
+                  _context3.next = 6;
                   break;
                 }
 
@@ -89,11 +199,11 @@ var store = new __WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */].Store({
                     console.warn(text);
                   }
                 };
-                _context.next = 4;
+                _context3.next = 4;
                 return __WEBPACK_IMPORTED_MODULE_5__rust_maze_rs___default.a.initialize(moduleParam);
 
               case 4:
-                module = _context.sent;
+                module = _context3.sent;
 
                 getMaze = function getMaze(lx, ly) {
                   wasmArrayToJs = module.cwrap('wasm_array_to_js', null, ['number', 'number', 'number', 'number', 'number']);
@@ -114,14 +224,15 @@ var store = new __WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */].Store({
                 ly = payload.ly;
                 buf = getMaze(lx, ly);
 
-                commit(OPERATION.SET_MAZE, { lx: lx, ly: ly, bonds: __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_array_from___default()(buf) });
+                commit(OPERATION.SET_MAZE, { lx: lx, ly: ly, bonds: __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_array_from___default()(buf) });
+                commit(OPERATION.SET_PLAYER, { x: 0, y: 0 });
 
-              case 10:
+              case 11:
               case 'end':
-                return _context.stop();
+                return _context3.stop();
             }
           }
-        }, _callee, _this);
+        }, _callee3, _this3);
       }))();
     }
   },
@@ -133,6 +244,10 @@ var store = new __WEBPACK_IMPORTED_MODULE_4_vuex__["a" /* default */].Store({
       for (var i = 0; i < payload.bonds.length; i++) {
         __WEBPACK_IMPORTED_MODULE_3_vue__["a" /* default */].set(state.bonds, i, payload.bonds[i]);
       }
+    },
+    setPlayer: function setPlayer(state, payload) {
+      state.player.x = payload.x;
+      state.player.y = payload.y;
     }
   }
 });
@@ -151,7 +266,7 @@ var Component = __webpack_require__(110)(
   /* script */
   __webpack_require__(125),
   /* template */
-  __webpack_require__(253),
+  __webpack_require__(254),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -197,7 +312,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Maze__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Maze__ = __webpack_require__(253);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Maze___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Maze__);
 //
 //
@@ -233,6 +348,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_createClass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_createClass__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash__ = __webpack_require__(223);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tori_png__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tori_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__tori_png__);
 
 
 //
@@ -241,6 +358,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+
 
 
 
@@ -280,6 +399,13 @@ var Renderer = function () {
       this.ctx.stroke();
     }
   }, {
+    key: 'drawImage',
+    value: function drawImage(x, y, image) {
+      var cx = x * this.unitWidth + this.offset;
+      var cy = y * this.unitHeight + this.offset;
+      this.ctx.drawImage(image, cx, cy);
+    }
+  }, {
     key: 'drawCircle',
     value: function drawCircle(x, y) {
       this.ctx.beginPath();
@@ -313,13 +439,30 @@ var Renderer = function () {
       height: null,
       cellWidth: 20,
       cellHeight: 20,
-      margin: 5
+      margin: 5,
+      image: null
     };
   },
   mounted: function mounted(vm) {
+    var _this = this;
+
     this.height = this.$el.offsetHeight;
     this.width = this.$el.offsetWidth;
     this.renderer = new Renderer(this.$refs.mazeCanvas.getContext('2d'), this.cellWidth, this.cellHeight, this.margin);
+    this.playerRenderer = new Renderer(this.$refs.playerCanvas.getContext('2d'), this.cellWidth, this.cellHeight, this.margin);
+    // アバター画像の読み込み
+    var image = new Image();
+    image.addEventListener('load', function () {
+      _this.image = image;
+    });
+    image.src = __WEBPACK_IMPORTED_MODULE_3__tori_png___default.a;
+
+    // キーイベントハンドラはグローバルに仕掛ける必要がある。
+    window.addEventListener('keyup', this.onKeyUp);
+    window.addEventListener('resize', function () {
+      _this.height = _this.$el.offsetHeight;
+      _this.width = _this.$el.offsetWidth;
+    });
   },
 
   computed: {
@@ -337,6 +480,9 @@ var Renderer = function () {
     },
     bondV: function bondV() {
       return this.$store.getters.getBondV();
+    },
+    player: function player() {
+      return this.$store.state.player;
     }
   },
   watch: {
@@ -351,9 +497,49 @@ var Renderer = function () {
     },
     bondV: function bondV() {
       this.renderMaze();
+    },
+    image: function image() {
+      this.renderPlayer();
+    },
+    'player.x': function playerX() {
+      this.renderPlayer();
+    },
+    'player.y': function playerY() {
+      this.renderPlayer();
     }
   },
   methods: {
+    onKeyUp: function onKeyUp(event) {
+      switch (event.keyCode) {
+        case 37:
+          this.goLeft();
+          break;
+        case 38:
+          this.goUp();
+          break;
+        case 39:
+          this.goRight();
+          break;
+        case 40:
+          this.goDown();
+      }
+    },
+    goUp: function goUp() {
+      this.moveTo(this.player.x, this.player.y - 1);
+    },
+    goDown: function goDown() {
+      this.moveTo(this.player.x, this.player.y + 1);
+    },
+    goLeft: function goLeft() {
+      this.moveTo(this.player.x - 1, this.player.y);
+    },
+    goRight: function goRight() {
+      this.moveTo(this.player.x + 1, this.player.y);
+    },
+    moveTo: function moveTo(x, y) {
+      this.$store.dispatch('movePlayerTo', { x: x, y: y });
+    },
+
     updateMaze: __WEBPACK_IMPORTED_MODULE_2_lodash___default.a.debounce(function () {
       if (this.lx > 0 && this.ly > 0) {
         this.$store.dispatch('update', {
@@ -362,6 +548,20 @@ var Renderer = function () {
         });
       }
     }, 300),
+    renderPlayer: function renderPlayer() {
+      var playerRenderer = this.playerRenderer,
+          player = this.player;
+
+      playerRenderer.clear(this.width, this.height);
+      playerRenderer.ctx = this.$refs.playerCanvas.getContext('2d');
+      playerRenderer.setColor('#FF9800', '#222');
+      if (this.image != null) {
+        playerRenderer.drawImage(player.x, player.y, this.image);
+      } else {
+        playerRenderer.drawCircle(player.x, player.y);
+      }
+    },
+    // TODO: make more declarative
     renderMaze: __WEBPACK_IMPORTED_MODULE_2_lodash___default.a.debounce(function () {
       var renderer = this.renderer,
           lx = this.lx,
@@ -370,10 +570,9 @@ var Renderer = function () {
           bondV = this.bondV;
 
 
+      this.renderPlayer();
       renderer.clear(this.width, this.height);
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d');
-      renderer.setColor('#FF9800', '#222');
-      renderer.drawCircle(0, 0);
       renderer.setColor('#4CAF50', '#222');
       renderer.drawCircle(lx - 1, ly - 1);
       renderer.setColor(null, '#222');
@@ -472,7 +671,14 @@ var Module;if(!Module)Module=(typeof Module!=="undefined"?Module:null)||{};var m
 
 /***/ }),
 
-/***/ 252:
+/***/ 250:
+/***/ (function(module, exports) {
+
+module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAaElEQVR42r3UwQ7AIAgDUP7/p7vTDrqixeJMSDzoC0og4ucFEgYEfOMA5hCHm7AC2gqOB1eIiFLg3Z1kmWJLNAFrf3cVTFC9CBZYyXxCvSeXULMVNWxugm3H6IWAOwvtuRjkMjqmtgw+kPJUyDu8u0QAAAAASUVORK5CYII="
+
+/***/ }),
+
+/***/ 253:
 /***/ (function(module, exports, __webpack_require__) {
 
 function injectStyle (ssrContext) {
@@ -482,7 +688,7 @@ var Component = __webpack_require__(110)(
   /* script */
   __webpack_require__(126),
   /* template */
-  __webpack_require__(254),
+  __webpack_require__(255),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -496,7 +702,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 253:
+/***/ 254:
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -511,7 +717,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ }),
 
-/***/ 254:
+/***/ 255:
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -523,15 +729,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "width": _vm.width,
       "height": _vm.height
     }
+  }), _vm._v(" "), _c('canvas', {
+    ref: "playerCanvas",
+    attrs: {
+      "width": _vm.width,
+      "height": _vm.height
+    }
   })])
 },staticRenderFns: []}
-
-/***/ }),
-
-/***/ 257:
-/***/ (function(module, exports) {
-
-/* (ignored) */
 
 /***/ }),
 
@@ -543,6 +748,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 /***/ }),
 
 /***/ 259:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 260:
 /***/ (function(module, exports) {
 
 /* (ignored) */
@@ -571,4 +783,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[124]);
-//# sourceMappingURL=app.9b0152e3f617bf690b46.js.map
+//# sourceMappingURL=app.eeae2986de14e2196506.js.map
