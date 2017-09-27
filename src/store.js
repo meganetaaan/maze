@@ -99,6 +99,7 @@ const store = new Vuex.Store({
       const ly = payload.ly
       const buf = getMaze(lx, ly)
       commit(OPERATION.SET_MAZE, { lx, ly, bonds: Array.from(buf) })
+      commit(OPERATION.SET_PLAYER, {x: 0, y: 0})
     }
   },
   mutations: {

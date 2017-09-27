@@ -36,8 +36,11 @@ body {
 }
 
 main {
+  position: absolute;
+  top: 56px;
+  height: calc(100% - 56px);
+  width: 100%;
   text-align: center;
-  height: calc(100% - 56px)
 }
 
 header {
