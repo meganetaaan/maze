@@ -62,8 +62,7 @@ export default {
       height: null,
       cellWidth: 20,
       cellHeight: 20,
-      margin: 5,
-      x: 0
+      margin: 5
     }
   },
   mounted (vm) {
@@ -81,6 +80,7 @@ export default {
       this.cellHeight,
       this.margin
     )
+    window.addEventListener('keyup', this.onKeyUp)
   },
   computed: {
     ready () {
@@ -117,9 +117,42 @@ export default {
     },
     'player.x' () {
       this.renderPlayer()
+    },
+    'player.y' () {
+      this.renderPlayer()
     }
   },
   methods: {
+    onKeyUp (event) {
+      switch (event.keyCode) {
+        case 37:
+          this.goLeft()
+          break
+        case 38:
+          this.goUp()
+          break
+        case 39:
+          this.goRight()
+          break
+        case 40:
+          this.goDown()
+      }
+    },
+    goUp () {
+      this.moveTo(this.player.x, this.player.y - 1)
+    },
+    goDown () {
+      this.moveTo(this.player.x, this.player.y + 1)
+    },
+    goLeft () {
+      this.moveTo(this.player.x - 1, this.player.y)
+    },
+    goRight () {
+      this.moveTo(this.player.x + 1, this.player.y)
+    },
+    moveTo (x, y) {
+      this.$store.dispatch('movePlayerTo', {x, y})
+    },
     updateMaze: _.debounce(function () {
       if (this.lx > 0 && this.ly > 0) {
         this.$store.dispatch('update', {
@@ -139,6 +172,7 @@ export default {
     renderMaze: _.debounce(function () {
       const {renderer, lx, ly, bondH, bondV} = this
 
+      this.renderPlayer()
       renderer.clear(this.width, this.height)
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
       renderer.setColor('#4CAF50', '#222')
@@ -180,7 +214,7 @@ export default {
   .maze {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 80%;
     min-height: 50px;
     min-width: 50px;
     overflow: hidden;

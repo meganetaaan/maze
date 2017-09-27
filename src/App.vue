@@ -2,7 +2,6 @@
   <div id="app">
     <header>
       <span>Maze</span>
-      <mazeControl></mazeControl>
     </header>
     <main>
       <maze></maze>
@@ -12,13 +11,11 @@
 
 <script>
 import Maze from './components/Maze'
-import MazeControl from './components/MazeControl'
 
 export default {
   name: 'app',
   components: {
-    Maze,
-    MazeControl
+    Maze
   }
 }
 </script>
