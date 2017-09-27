@@ -1,11 +1,13 @@
 <template>
   <div class="maze">
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
+    <canvas ref="playerCanvas" :width="width" :height="height"></canvas>
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
+import imagePath from './tori.png'
 class Renderer {
   constructor (ctx, unitWidth, unitHeight, offset) {
     this.ctx = ctx
@@ -31,6 +33,12 @@ class Renderer {
 
   stroke () {
     this.ctx.stroke()
+  }
+
+  drawImage (x, y, image) {
+    const cx = x * this.unitWidth + this.offset
+    const cy = y * this.unitHeight + this.offset
+    this.ctx.drawImage(image, cx, cy)
   }
 
   drawCircle (x, y) {
@@ -61,7 +69,8 @@ export default {
       height: null,
       cellWidth: 20,
       cellHeight: 20,
-      margin: 5
+      margin: 5,
+      image: null
     }
   },
   mounted (vm) {
@@ -73,6 +82,26 @@ export default {
       this.cellHeight,
       this.margin
     )
+    this.playerRenderer = new Renderer(
+      this.$refs.playerCanvas.getContext('2d'),
+      this.cellWidth,
+      this.cellHeight,
+      this.margin
+    )
+    // アバター画像の読み込み
+    const image = new Image()
+    image.addEventListener('load', () => {
+      debugger
+      this.image = image
+    })
+    image.src = imagePath
+
+    // キーイベントハンドラはグローバルに仕掛ける必要がある。
+    window.addEventListener('keyup', this.onKeyUp)
+    window.addEventListener('resize', () => {
+      this.height = this.$el.offsetHeight
+      this.width = this.$el.offsetWidth
+    })
   },
   computed: {
     ready () {
@@ -89,6 +118,9 @@ export default {
     },
     bondV () {
       return this.$store.getters.getBondV()
+    },
+    player () {
+      return this.$store.state.player
     }
   },
   watch: {
@@ -103,9 +135,48 @@ export default {
     },
     bondV () {
       this.renderMaze()
+    },
+    image () {
+      this.renderPlayer()
+    },
+    'player.x' () {
+      this.renderPlayer()
+    },
+    'player.y' () {
+      this.renderPlayer()
     }
   },
   methods: {
+    onKeyUp (event) {
+      switch (event.keyCode) {
+        case 37:
+          this.goLeft()
+          break
+        case 38:
+          this.goUp()
+          break
+        case 39:
+          this.goRight()
+          break
+        case 40:
+          this.goDown()
+      }
+    },
+    goUp () {
+      this.moveTo(this.player.x, this.player.y - 1)
+    },
+    goDown () {
+      this.moveTo(this.player.x, this.player.y + 1)
+    },
+    goLeft () {
+      this.moveTo(this.player.x - 1, this.player.y)
+    },
+    goRight () {
+      this.moveTo(this.player.x + 1, this.player.y)
+    },
+    moveTo (x, y) {
+      this.$store.dispatch('movePlayerTo', {x, y})
+    },
     updateMaze: _.debounce(function () {
       if (this.lx > 0 && this.ly > 0) {
         this.$store.dispatch('update', {
@@ -114,13 +185,24 @@ export default {
         })
       }
     }, 300),
+    renderPlayer: function () {
+      const {playerRenderer, player} = this
+      playerRenderer.clear(this.width, this.height)
+      playerRenderer.ctx = this.$refs.playerCanvas.getContext('2d')
+      playerRenderer.setColor('#FF9800', '#222')
+      if (this.image != null) {
+        playerRenderer.drawImage(player.x, player.y, this.image)
+      } else {
+        playerRenderer.drawCircle(player.x, player.y)
+      }
+    },
+    // TODO: make more declarative
     renderMaze: _.debounce(function () {
       const {renderer, lx, ly, bondH, bondV} = this
 
+      this.renderPlayer()
       renderer.clear(this.width, this.height)
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
-      renderer.setColor('#FF9800', '#222')
-      renderer.drawCircle(0, 0)
       renderer.setColor('#4CAF50', '#222')
       renderer.drawCircle(lx - 1, ly - 1)
       renderer.setColor(null, '#222')
@@ -158,10 +240,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .maze {
+    position: absolute;
     width: 100%;
     height: 100%;
     min-height: 50px;
     min-width: 50px;
     overflow: hidden;
+  }
+  canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 </style>

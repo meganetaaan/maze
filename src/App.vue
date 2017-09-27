@@ -36,8 +36,11 @@ body {
 }
 
 main {
+  position: absolute;
+  top: 56px;
+  height: calc(100% - 56px);
+  width: 100%;
   text-align: center;
-  height: calc(100% - 56px)
 }
 
 header {
@@ -57,5 +60,11 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+mazeControl {
+  position: absolute;
+  top: 15px;
+  left: 120px;
 }
 </style>
