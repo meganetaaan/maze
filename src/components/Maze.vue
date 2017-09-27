@@ -91,7 +91,6 @@ export default {
     // アバター画像の読み込み
     const image = new Image()
     image.addEventListener('load', () => {
-      debugger
       this.image = image
     })
     image.src = imagePath
