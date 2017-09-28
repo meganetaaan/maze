@@ -1,7 +1,10 @@
 <template>
   <div class="maze">
     <canvas ref="mazeCanvas" :width="width" :height="height"></canvas>
-    <canvas ref="playerCanvas" :width="width" :height="height"></canvas>
+    <canvas ref="playerCanvas"
+    @touchmove="onTouchMove"
+    @mousemove="onMouseMove"
+    :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -146,6 +149,34 @@ export default {
     }
   },
   methods: {
+    onTouchMove (event) {
+      console.log('mousemove')
+      event.stopPropagation()
+      event.preventDefault()
+
+      const touch = event.touches[0]
+      const rect = touch.target.getBoundingClientRect()
+      const pos = {
+        offsetX: touch.clientX - rect.x,
+        offsetY: touch.clientY - rect.y
+      }
+      this.handleMove(pos)
+    },
+    onMouseMove (event) {
+      this.handleMove(event)
+    },
+    handleMove (pos) {
+      const offsetX = pos.offsetX
+      const offsetY = pos.offsetY
+      const x = Math.floor((offsetX - this.margin) / this.cellWidth)
+      const y = Math.floor((offsetY - this.margin) / this.cellHeight)
+      console.log(`(${x}, ${y})`)
+      const dx = this.player.x - x
+      const dy = this.player.y - y
+      if (Math.abs(dx * dy) <= 1) {
+        this.moveTo(x, y)
+      }
+    },
     onKeyUp (event) {
       switch (event.keyCode) {
         case 37:
