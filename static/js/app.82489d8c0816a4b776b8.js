@@ -332,6 +332,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'app',
   components: {
     Maze: __WEBPACK_IMPORTED_MODULE_0__components_Maze___default.a
+  },
+  methods: {
+    openRepository: function openRepository() {
+      window.open('https://github.com/meganetaaan/maze');
+    }
   }
 });
 
@@ -741,10 +746,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "app"
     }
-  }, [_vm._m(0), _vm._v(" "), _c('main', [_c('maze')], 1)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('header', [_c('span', [_vm._v("Maze")])])
-}]}
+  }, [_c('header', [_c('span', {
+    on: {
+      "click": _vm.openRepository
+    }
+  }, [_vm._v("Maze")])]), _vm._v(" "), _c('main', [_c('maze')], 1)])
+},staticRenderFns: []}
 
 /***/ }),
 
@@ -818,4 +825,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[124]);
-//# sourceMappingURL=app.fd1fd1a02c2ae8b9002a.js.map
+//# sourceMappingURL=app.82489d8c0816a4b776b8.js.map
