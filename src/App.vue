@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <span>Maze</span>
+      <span @click="openRepository">Maze</span>
     </header>
     <main>
       <maze></maze>
@@ -16,6 +16,11 @@ export default {
   name: 'app',
   components: {
     Maze
+  },
+  methods: {
+    openRepository () {
+      window.open('https://github.com/meganetaaan/maze')
+    }
   }
 }
 </script>
@@ -60,6 +65,7 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+  cursor: pointer;
 }
 
 mazeControl {
