@@ -359,6 +359,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -509,6 +512,34 @@ var Renderer = function () {
     }
   },
   methods: {
+    onTouchMove: function onTouchMove(event) {
+      console.log('mousemove');
+      event.stopPropagation();
+      event.preventDefault();
+
+      var touch = event.touches[0];
+      var rect = touch.target.getBoundingClientRect();
+      var pos = {
+        offsetX: touch.clientX - rect.x,
+        offsetY: touch.clientY - rect.y
+      };
+      this.handleMove(pos);
+    },
+    onMouseMove: function onMouseMove(event) {
+      this.handleMove(event);
+    },
+    handleMove: function handleMove(pos) {
+      var offsetX = pos.offsetX;
+      var offsetY = pos.offsetY;
+      var x = Math.floor((offsetX - this.margin) / this.cellWidth);
+      var y = Math.floor((offsetY - this.margin) / this.cellHeight);
+      console.log('(' + x + ', ' + y + ')');
+      var dx = this.player.x - x;
+      var dy = this.player.y - y;
+      if (Math.abs(dx * dy) <= 1) {
+        this.moveTo(x, y);
+      }
+    },
     onKeyUp: function onKeyUp(event) {
       switch (event.keyCode) {
         case 37:
@@ -734,6 +765,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "width": _vm.width,
       "height": _vm.height
+    },
+    on: {
+      "touchmove": _vm.onTouchMove,
+      "mousemove": _vm.onMouseMove
     }
   })])
 },staticRenderFns: []}
@@ -783,4 +818,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[124]);
-//# sourceMappingURL=app.eeae2986de14e2196506.js.map
+//# sourceMappingURL=app.fd1fd1a02c2ae8b9002a.js.map
