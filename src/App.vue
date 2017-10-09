@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Maze from './components/Maze'
+import Maze from 'vue-maze'
 
 export default {
   name: 'app',
@@ -46,6 +46,11 @@ main {
   height: calc(100% - 56px);
   width: 100%;
   text-align: center;
+}
+
+.maze {
+  width: 100%;
+  height: 100%;
 }
 
 header {
