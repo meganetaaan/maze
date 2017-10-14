@@ -36122,7 +36122,7 @@ module.exports = function normalizeComponent (
       console.log(`(${x}, ${y})`)
       const dx = x - this.player.x
       const dy = y - this.player.y
-      if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
+      if (Math.abs(dx) + Math.abs(dy) <= 2) {
         this.moveBy(dx, dy)
       }
     },
@@ -36158,6 +36158,27 @@ module.exports = function normalizeComponent (
       const y = this.player.y + dy
       this.moveTo(x, y)
     },
+    canReach(fromX, fromY, toX, toY) {
+      if (fromX === toX && fromY === toY) {
+        return true
+      }
+
+      const dx = toX > fromX ? 1 : -1
+      const dy = toY > fromY ? 1 : -1
+      const idxH = toX > fromX ? (this.lx + 1) * fromY + fromX + dx : (this.lx + 1) * fromY + fromX
+      const idxV = toY > fromY ? (this.lx * (fromY + dy) + fromX) : this.lx * fromY + fromX
+
+      if (fromX !== toX &&
+        this.maze.bondH[idxH] &&
+        this.canReach(fromX + dx, fromY, toX, toY)) {
+        return true
+      } else if (fromY !== toY &&
+        this.maze.bondV[idxV] &&
+        this.canReach(fromX, fromY + dy, toX, toY)) {
+        return true
+      }
+      return false
+    },
     moveTo (toX, toY) {
       console.log(`moveTo: ${toX}, ${toY}`)
 
@@ -36167,22 +36188,17 @@ module.exports = function normalizeComponent (
       const bondV = this.maze.bondV
 
       // Check if player can move
+
+      // Players can't go outside of the maze
       if (toX < 0 || toX >= this.lx || toY < 0 || toY >= this.ly) {
         return
       }
-      for (let i = Math.min(fromX, toX); i < Math.max(fromX, toX); i++) {
-        // 例： from(0, 0) to(1, 0)
-        let idx = ((this.lx + 1) * fromY) + i + 1
-        if (!bondH[idx]) {
-          return
-        }
+
+      // Players can't go through the walls
+      if (!this.canReach(fromX, fromY, toX, toY)) {
+        return
       }
-      for (let j = Math.min(fromY, toY); j < Math.max(fromY, toY); j++) {
-        let idx = (this.lx * (j + 1) + fromX)
-        if (!bondV[idx]) {
-          return
-        }
-      }
+
       __WEBPACK_IMPORTED_MODULE_1_vue__["a" /* default */].set(this, 'player', { x: toX, y: toY })
       if (toX === this.maze.goal.x &&
         toY === this.maze.goal.y) {
@@ -65042,4 +65058,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.19eee9aa314d1bc53b44.js.map
+//# sourceMappingURL=vendor.5ac1f2bcf24ef3e68847.js.map
