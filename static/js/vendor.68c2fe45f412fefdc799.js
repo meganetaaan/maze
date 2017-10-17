@@ -35988,6 +35988,14 @@ module.exports = function normalizeComponent (
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -35999,6 +36007,11 @@ module.exports = function normalizeComponent (
   name: 'maze',
   data () {
     return {
+      cache: null,
+      dotPos: {
+        offsetX: null,
+        offsetY: null
+      },
       width: null,
       height: null,
       cellWidth: 20,
@@ -36023,13 +36036,13 @@ module.exports = function normalizeComponent (
     }
   },
   computed: {
-    lx() {
+    lx () {
       return Math.max(1, Math.floor((this.width - this.margin * 2) / this.cellWidth))
     },
-    ly() {
+    ly () {
       return Math.max(1, Math.floor((this.height - this.margin * 2) / this.cellHeight))
     },
-    effectStyle() {
+    effectStyle () {
       if (this.isFinished) {
         return {
           display: 'inline'
@@ -36037,6 +36050,18 @@ module.exports = function normalizeComponent (
       }
       return {
         display: 'none'
+      }
+    },
+    dotStyle () {
+      return {
+        position: 'absolute',
+         backgroundColor: 'black',
+         height: '5px',
+         width: '5px',
+         opacity: 0.5,
+         borderRadius: '50%',
+         top: this.dotPos.offsetY + 'px',
+         left: this.dotPos.offsetX + 'px'
       }
     }
   },
@@ -36099,17 +36124,40 @@ module.exports = function normalizeComponent (
     }
   },
   methods: {
-    onTouchMove (event) {
-      event.stopPropagation()
-      event.preventDefault()
-
+    onTouchStart (event) {
       const touch = event.touches[0]
-      const rect = touch.target.getBoundingClientRect()
-      const pos = {
-        offsetX: touch.clientX - rect.x,
-        offsetY: touch.clientY - rect.y
-      }
-      this.handleMove(pos)
+      this.cache = {}
+      this.cache.rect =
+      this.cache.avatorPosition =
+      this.cache.originalPosition =
+      __WEBPACK_IMPORTED_MODULE_1_vue__["a" /* default */].set(this, 'cache', {
+        rect: touch.target.getBoundingClientRect(),
+        avatorPosition: {
+          x: this.player.x * this.cellWidth + this.margin + this.cellWidth / 2,
+          y: this.player.y * this.cellHeight + this.margin + this.cellHeight / 2
+        },
+        originalPosition: {
+          x: touch.clientX,
+          y: touch.clientY
+        },
+        pos: {
+          offsetX: touch.clientX,
+          offsetY: touch.clientY
+        }
+      })
+    },
+    onTouchMove (event) {
+      const touch = event.touches[0]
+      const avatorPos = this.cache.avatorPosition
+      const originalPos = this.cache.originalPosition
+      __WEBPACK_IMPORTED_MODULE_1_vue__["a" /* default */].set(this, 'dotPos', {
+        offsetX: touch.clientX - originalPos.x + avatorPos.x,
+        offsetY: touch.clientY - originalPos.y + avatorPos.y
+      })
+      this.handleMove(this.dotPos)
+    },
+    onTouchEnd () {
+      this.cache = null
     },
     onMouseMove (event) {
       this.handleMove(event)
@@ -36119,7 +36167,6 @@ module.exports = function normalizeComponent (
       const offsetY = pos.offsetY
       const x = Math.floor((offsetX - this.margin) / this.cellWidth)
       const y = Math.floor((offsetY - this.margin) / this.cellHeight)
-      console.log(`(${x}, ${y})`)
       const dx = x - this.player.x
       const dy = y - this.player.y
       if (Math.abs(dx) + Math.abs(dy) <= 2) {
@@ -36180,8 +36227,6 @@ module.exports = function normalizeComponent (
       return false
     },
     moveTo (toX, toY) {
-      console.log(`moveTo: ${toX}, ${toY}`)
-
       const fromX = this.player.x
       const fromY = this.player.y
       const bondH = this.maze.bondH
@@ -36264,7 +36309,6 @@ module.exports = function normalizeComponent (
         const { renderer, lx, ly, maze } = this
         const bondH = maze.bondH
         const bondV = maze.bondV
-        console.log(`bondH: ${bondH.length}, bondV: ${bondV.length}`)
 
         renderer.clear(this.width, this.height)
 
@@ -63770,7 +63814,7 @@ var Renderer = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze"},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchmove":_vm.onTouchMove,"mousemove":_vm.onMouseMove}})])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze"},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchstart":_vm.onTouchStart,"touchmove":_vm.onTouchMove,"touchend":_vm.onTouchEnd,"mousemove":_vm.onMouseMove}}),_vm._v(" "),(_vm.cache)?_c('div',{style:(_vm.dotStyle)}):_vm._e()])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -65058,4 +65102,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.5ac1f2bcf24ef3e68847.js.map
+//# sourceMappingURL=vendor.68c2fe45f412fefdc799.js.map
