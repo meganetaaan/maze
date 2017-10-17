@@ -36095,6 +36095,8 @@ module.exports = function normalizeComponent (
   },
   methods: {
     onTouchStart (event) {
+      event.preventDefault()
+      event.stopPropagation()
       const touch = event.touches[0]
       this.cache = {}
       this.cache.rect =
@@ -36119,6 +36121,7 @@ module.exports = function normalizeComponent (
     onTouchMove (event) {
       // For preventing "Pull to refresh" feature on Android
       event.preventDefault()
+      event.stopPropagation()
       const touch = event.touches[0]
       const avatorPos = this.cache.avatorPosition
       const originalPos = this.cache.originalPosition
@@ -36128,7 +36131,9 @@ module.exports = function normalizeComponent (
       })
       this.handleMove(this.dotPos)
     },
-    onTouchEnd () {
+    onTouchEnd (event) {
+      event.preventDefault()
+      event.stopPropagation()
       this.cache = null
     },
     onMouseMove (event) {
@@ -47981,4 +47986,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.bf132cf10bf3348d3034.js.map
+//# sourceMappingURL=vendor.5fbafa6a7ec42a5dc4e0.js.map
