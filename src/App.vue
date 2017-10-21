@@ -1,10 +1,16 @@
 <template>
   <div id="app">
     <header>
-      <span @click="openRepository">Maze</span>
+      <span class="header-item title" @click="openRepository">Maze</span>
+      <span class="header-item best">{{bestTime}}</span>
+      <select class="header-item difficulty" v-model="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Hard</option>
+      </select>
     </header>
     <main>
-      <maze></maze>
+      <maze :difficulty="difficulty"></maze>
     </main>
   </div>
 </template>
@@ -17,9 +23,34 @@ export default {
   components: {
     Maze
   },
+  data () {
+    return {
+      difficulty: 'normal',
+      bestTimes: {
+        easy: null,
+        normal: null,
+        hard: null
+      },
+      current: null
+    }
+  },
+  computed: {
+    bestTime () {
+      return this.bestTimes[this.difficulty]
+    }
+  },
   methods: {
     openRepository () {
       window.open('https://github.com/meganetaaan/maze')
+    },
+    onStart: function () {
+      this.startTime = Date.now()
+    },
+    onFinish: function () {
+      this.time = Date.now() - this.startTime
+    },
+    onInit: function () {
+      this.startTime = 0
     }
   }
 }
@@ -59,9 +90,15 @@ header {
   padding: 0 16px 0 24px;
   background-color: #35495E;
   color: #ffffff;
+  display: flex;
 }
 
-header span {
+.header-item {
+  font-size: 20px;
+  flex-grow: 1;
+}
+
+.title {
   display: block;
   position: relative;
   font-size: 20px;
@@ -71,6 +108,12 @@ header span {
   box-sizing: border-box;
   padding-top: 16px;
   cursor: pointer;
+}
+
+.difficulty {
+  max-width: 200px;
+  flex-grow: 0;
+  margin: 0 2;
 }
 
 mazeControl {

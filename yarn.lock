@@ -6453,9 +6453,9 @@ vue-loader@^12.1.0:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.2.2"
 
-vue-maze@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/vue-maze/-/vue-maze-0.2.4.tgz#c92ba3db12fae893bc0c7fd08e3a4a023e7f3590"
+vue-maze@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/vue-maze/-/vue-maze-0.2.5.tgz#25caccafe51e31bb8be0f2848cc59c3d97cc3b7b"
   dependencies:
     vue "^2.4.4"
 
