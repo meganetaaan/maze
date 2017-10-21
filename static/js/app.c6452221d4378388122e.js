@@ -325,6 +325,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -333,9 +339,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     Maze: __WEBPACK_IMPORTED_MODULE_0_vue_maze___default.a
   },
+  data: function data() {
+    return {
+      difficulty: 'normal',
+      bestTimes: {
+        easy: null,
+        normal: null,
+        hard: null
+      },
+      current: null
+    };
+  },
+
+  computed: {
+    bestTime: function bestTime() {
+      return this.bestTimes[this.difficulty];
+    }
+  },
   methods: {
     openRepository: function openRepository() {
       window.open('https://github.com/meganetaaan/maze');
+    },
+
+    onStart: function onStart() {
+      this.startTime = Date.now();
+    },
+    onFinish: function onFinish() {
+      this.time = Date.now() - this.startTime;
+    },
+    onInit: function onInit() {
+      this.startTime = 0;
     }
   }
 });
@@ -407,10 +440,48 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "id": "app"
     }
   }, [_c('header', [_c('span', {
+    staticClass: "header-item title",
     on: {
       "click": _vm.openRepository
     }
-  }, [_vm._v("Maze")])]), _vm._v(" "), _c('main', [_c('maze')], 1)])
+  }, [_vm._v("Maze")]), _vm._v(" "), _c('span', {
+    staticClass: "header-item best"
+  }, [_vm._v(_vm._s(_vm.bestTime))]), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.difficulty),
+      expression: "difficulty"
+    }],
+    staticClass: "header-item difficulty",
+    on: {
+      "change": function($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
+          return o.selected
+        }).map(function(o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val
+        });
+        _vm.difficulty = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+      }
+    }
+  }, [_c('option', {
+    attrs: {
+      "value": "easy"
+    }
+  }, [_vm._v("Easy")]), _vm._v(" "), _c('option', {
+    attrs: {
+      "value": "normal"
+    }
+  }, [_vm._v("Normal")]), _vm._v(" "), _c('option', {
+    attrs: {
+      "value": "hard"
+    }
+  }, [_vm._v("Hard")])])]), _vm._v(" "), _c('main', [_c('maze', {
+    attrs: {
+      "difficulty": _vm.difficulty
+    }
+  })], 1)])
 },staticRenderFns: []}
 
 /***/ }),
@@ -458,4 +529,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[122]);
-//# sourceMappingURL=app.ab561ad50ff4dea007ce.js.map
+//# sourceMappingURL=app.c6452221d4378388122e.js.map

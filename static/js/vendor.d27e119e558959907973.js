@@ -35503,7 +35503,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, ".maze[data-v-16f8fd4c]{position:relative;min-height:60px;min-width:60px;overflow:hidden}canvas[data-v-16f8fd4c]{position:absolute;top:0;left:0;margin:auto}", ""]);
+exports.push([module.i, ".maze[data-v-16f8fd4c]{outline:0;position:relative;min-height:60px;min-width:60px;overflow:hidden}canvas[data-v-16f8fd4c]{position:absolute;top:0;left:0;margin:auto}", ""]);
 
 // exports
 
@@ -35984,8 +35984,6 @@ module.exports = function normalizeComponent (
       },
       width: null,
       height: null,
-      cellWidth: 20,
-      cellHeight: 20,
       margin: 5,
       image: null,
       maze: {
@@ -36005,7 +36003,33 @@ module.exports = function normalizeComponent (
       seed: Date.now()
     }
   },
+  props: {
+    difficulty: {
+      default: 'normal',
+      type: String
+    }
+  },
   computed: {
+    cellWidth () {
+       switch (this.difficulty) {
+          case 'easy':
+            return 50
+          case 'hard':
+            return 10
+          default:
+            return 20
+       }
+    },
+    cellHeight () {
+       switch (this.difficulty) {
+          case 'easy':
+            return 50
+          case 'hard':
+            return 10
+          default:
+            return 20
+       }
+    },
     lx () {
       return Math.max(1, Math.floor((this.width - this.margin * 2) / this.cellWidth))
     },
@@ -36038,18 +36062,6 @@ module.exports = function normalizeComponent (
   mounted(vm) {
     this.height = this.$el.offsetHeight - this.margin
     this.width = this.$el.offsetWidth - this.margin
-    this.renderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
-      this.$refs.mazeCanvas.getContext('2d'),
-      this.cellWidth,
-      this.cellHeight,
-      this.margin
-    )
-    this.playerRenderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
-      this.$refs.playerCanvas.getContext('2d'),
-      this.cellWidth,
-      this.cellHeight,
-      this.margin
-    )
     // アバター画像の読み込み
     const image = new Image()
     image.addEventListener('load', () => {
@@ -36057,8 +36069,6 @@ module.exports = function normalizeComponent (
     })
     image.src = __WEBPACK_IMPORTED_MODULE_2__tori_png___default.a
 
-    // キーイベントハンドラはグローバルに仕掛ける必要がある。
-    window.addEventListener('keyup', this.onKeyUp)
     window.addEventListener('resize', () => {
       this.height = this.$el.offsetHeight
       this.width = this.$el.offsetWidth
@@ -36078,6 +36088,7 @@ module.exports = function normalizeComponent (
       this.resetMaze()
     },
     maze () {
+      this.$emit('init')
       this.renderMaze()
     },
     player () {
@@ -36222,9 +36233,14 @@ module.exports = function normalizeComponent (
       }
 
       __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].set(this, 'player', { x: toX, y: toY })
+      if (!this.isStarted) {
+        this.isStarted = true
+        this.$emit('start')
+      }
       if (toX === this.maze.goal.x &&
-        toY === this.maze.goal.y) {
+        toY === this.maze.goal.y && !this.isFinished) {
         this.isFinished = true
+        this.$emit('finish')
       }
     },
     resetMaze () {
@@ -36235,11 +36251,18 @@ module.exports = function normalizeComponent (
         const maze = new __WEBPACK_IMPORTED_MODULE_1__getMaze__["a" /* default */](lx, ly, seed)
         __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].set(this, 'maze', maze)
         __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].set(this, 'player', { x: 0, y: 0 })
+        this.isStarted = false
         this.isFinished = false
       }
     },
     renderPlayer () {
-      const { playerRenderer, player } = this
+      const playerRenderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
+        this.$refs.playerCanvas.getContext('2d'),
+        this.cellWidth,
+        this.cellHeight,
+        this.margin
+      )
+      const player = this.player
       playerRenderer.clear(this.width, this.height)
       playerRenderer.ctx = this.$refs.playerCanvas.getContext('2d')
       playerRenderer.setColor('#FF9800', '#222')
@@ -36250,20 +36273,26 @@ module.exports = function normalizeComponent (
       }
     },
     renderGoal () {
-      const { renderer, maze } = this
+      const renderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
+        this.$refs.mazeCanvas.getContext('2d'),
+        this.cellWidth,
+        this.cellHeight,
+        this.margin
+      )
+      const maze = this.maze
       const goal = maze.goal
       renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
       renderer.setColor('#4CAF50', '#222')
       renderer.drawCircle(goal.x, goal.y)
     },
     renderConguraturations () {
-      this.effectRenderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
+      const effectRenderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
         this.$refs.effectCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
         this.margin
       )
-      this.effectRenderer.clear(this.width, this.height)
+      effectRenderer.clear(this.width, this.height)
       // TODO: data
       const texts = [
         'BooYah!',
@@ -36272,18 +36301,17 @@ module.exports = function normalizeComponent (
         'Woohoo!'
       ]
       const text = texts[Math.floor(texts.length * Math.random())]
-      this.effectRenderer.drawText(text, this.player.x, this.player.y)
-      /*
-      this.effectRenderer.setColor('rgba(192, 80, 77, 0.2)', '#FF0000')
-      this.effectRenderer.drawCircle(this.player.x, this.player.y, 50)
-      setTimeout(function() {
-        this.effectRenderer.clear(this.width, this.height)
-      }.bind(this), 300)
-      */
+      effectRenderer.drawText(text, this.player.x, this.player.y)
     },
     renderMaze () {
       this.$nextTick(() => {
-        const { renderer, lx, ly, maze } = this
+        const renderer = new __WEBPACK_IMPORTED_MODULE_3__Renderer__["a" /* default */](
+          this.$refs.mazeCanvas.getContext('2d'),
+          this.cellWidth,
+          this.cellHeight,
+          this.margin
+        )
+        const { lx, ly, maze } = this
         const bondH = maze.bondH
         const bondV = maze.bondV
 
@@ -46655,10 +46683,11 @@ var Renderer = /** @class */ (function () {
     Renderer.prototype.drawImage = function (x, y, image) {
         var scaleX = this.unitWidth / image.width;
         var scaleY = this.unitHeight / image.height;
-        var cx = x * this.unitWidth / scaleX + this.offset;
-        var cy = y * this.unitHeight / scaleY + this.offset;
+        var cx = x * this.unitWidth / scaleX + (this.offset / scaleX);
+        var cy = y * this.unitHeight / scaleY + (this.offset / scaleY);
         this.ctx.save();
         this.ctx.scale(scaleX, scaleY);
+        this.ctx.imageSmoothingEnabled = false;
         this.ctx.drawImage(image, cx, cy);
         this.ctx.restore();
     };
@@ -46698,7 +46727,7 @@ var Renderer = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze"},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchstart":_vm.onTouchStart,"touchmove":_vm.onTouchMove,"touchend":_vm.onTouchEnd,"mousemove":_vm.onMouseMove}}),_vm._v(" "),(_vm.cache)?_c('div',{style:(_vm.dotStyle)}):_vm._e()])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze",attrs:{"tabindex":"-1"},on:{"keyup":_vm.onKeyUp}},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchstart":_vm.onTouchStart,"touchmove":_vm.onTouchMove,"touchend":_vm.onTouchEnd,"mousemove":_vm.onMouseMove}}),_vm._v(" "),(_vm.cache)?_c('div',{style:(_vm.dotStyle)}):_vm._e()])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -47986,4 +48015,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.5fbafa6a7ec42a5dc4e0.js.map
+//# sourceMappingURL=vendor.d27e119e558959907973.js.map
