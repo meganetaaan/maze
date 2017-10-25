@@ -19,6 +19,7 @@
     "lodash": "^4.17.4",
     "vue": "^2.3.3",
     "vue-maze": "^0.2.5",
+    "vue-timer-mixin": "github:meganetaaan/vue-timer-mixin",
     "vuex": "^2.4.0"
   },
   "devDependencies": {
