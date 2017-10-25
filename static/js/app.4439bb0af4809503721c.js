@@ -25,7 +25,7 @@ module.exports = path;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__ = __webpack_require__(126);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(246);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(247);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rust_maze_rs__ = __webpack_require__(233);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rust_maze_rs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__rust_maze_rs__);
 
@@ -314,6 +314,28 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_maze__ = __webpack_require__(244);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_maze___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_maze__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_timer_mixin__ = __webpack_require__(246);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -333,12 +355,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 
+
+
+var mixin = new __WEBPACK_IMPORTED_MODULE_1_vue_timer_mixin__["a" /* default */]({
+  start: 'gameStart',
+  stop: 'gameFinish',
+  reset: 'gameInit',
+  tick: 33
+});
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
   components: {
     Maze: __WEBPACK_IMPORTED_MODULE_0_vue_maze___default.a
   },
+  mixins: [mixin],
   data: function data() {
     return {
       difficulty: 'normal',
@@ -347,7 +378,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         normal: null,
         hard: null
       },
-      current: null
+      current: null,
+      score: 0,
+      finished: false
     };
   },
 
@@ -361,14 +394,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       window.open('https://github.com/meganetaaan/maze');
     },
 
+    formatTime: function formatTime(msec) {
+      var ms = String(Math.floor(msec % 1000)).padStart(3, 0);
+      var sec = String(Math.floor(msec / 1000)).padStart(2, 0);
+      var minute = String(Math.floor(sec / 60)).padStart(2, 0);
+      return minute + ':' + sec + '.' + ms;
+    },
     onStart: function onStart() {
-      this.startTime = Date.now();
+      this.$emit('gameStart');
     },
     onFinish: function onFinish() {
-      this.time = Date.now() - this.startTime;
+      this.score = this.time;
+      this.finished = true;
+      this.$emit('gameFinish');
     },
     onInit: function onInit() {
-      this.startTime = 0;
+      this.$emit('gameInit');
+    },
+    onClickNext: function onClickNext() {
+      this.finished = false;
     }
   }
 });
@@ -439,12 +483,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "app"
     }
-  }, [_c('header', [_c('span', {
+  }, [_c('transition', {
+    attrs: {
+      "name": "pop"
+    }
+  }, [(_vm.finished) ? _c('div', {
+    staticClass: "overlay"
+  }, [_c('div', {
+    staticClass: "modal"
+  }, [_c('div', {
+    staticClass: "message"
+  }, [_c('div', {
+    staticClass: "you-scored"
+  }, [_vm._v("You Scored")]), _vm._v(" "), _c('div', {
+    staticClass: "score"
+  }, [_vm._v(_vm._s(_vm.formatTime(_vm.score)))]), _vm._v(" "), _c('div', {
+    staticClass: "you-scored"
+  }, [_vm._v("@" + _vm._s(_vm.difficulty) + " mode!!")])]), _vm._v(" "), _c('div', {
+    staticClass: "buttons"
+  }, [_c('button', {
+    attrs: {
+      "val": "next"
+    },
+    on: {
+      "click": _vm.onClickNext
+    }
+  }, [_vm._v("PLAY AGAIN")])])])]) : _vm._e()]), _vm._v(" "), _c('header', [_c('span', {
     staticClass: "header-item title",
     on: {
       "click": _vm.openRepository
     }
   }, [_vm._v("Maze")]), _vm._v(" "), _c('span', {
+    staticClass: "header-item time"
+  }, [_vm._v(_vm._s(_vm.formatTime(_vm.time)))]), _vm._v(" "), _c('span', {
     staticClass: "header-item best"
   }, [_vm._v(_vm._s(_vm.bestTime))]), _vm._v(" "), _c('select', {
     directives: [{
@@ -480,16 +551,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("Hard")])])]), _vm._v(" "), _c('main', [_c('maze', {
     attrs: {
       "difficulty": _vm.difficulty
+    },
+    on: {
+      "start": _vm.onStart,
+      "finish": _vm.onFinish,
+      "init": _vm.onInit
     }
-  })], 1)])
+  })], 1)], 1)
 },staticRenderFns: []}
-
-/***/ }),
-
-/***/ 248:
-/***/ (function(module, exports) {
-
-/* (ignored) */
 
 /***/ }),
 
@@ -501,6 +570,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 /***/ }),
 
 /***/ 250:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 251:
 /***/ (function(module, exports) {
 
 /* (ignored) */
@@ -529,4 +605,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[122]);
-//# sourceMappingURL=app.c6452221d4378388122e.js.map
+//# sourceMappingURL=app.4439bb0af4809503721c.js.map

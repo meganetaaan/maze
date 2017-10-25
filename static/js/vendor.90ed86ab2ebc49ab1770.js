@@ -1880,7 +1880,7 @@ function isnan (val) {
 
   var Buffer;
   try {
-    Buffer = __webpack_require__(248).Buffer;
+    Buffer = __webpack_require__(249).Buffer;
   } catch (e) {
   }
 
@@ -5256,7 +5256,7 @@ function isnan (val) {
   };
 })(typeof module === 'undefined' || module, this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(247)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(248)(module)))
 
 /***/ }),
 /* 3 */
@@ -20303,7 +20303,7 @@ if (typeof self === 'object') {
 } else {
   // Node.js or Web worker with no crypto support
   try {
-    var crypto = __webpack_require__(249);
+    var crypto = __webpack_require__(250);
     if (typeof crypto.randomBytes !== 'function')
       throw new Error('Not supported');
 
@@ -22065,7 +22065,7 @@ util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(250);
+var debugUtil = __webpack_require__(251);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -46775,6 +46775,97 @@ module.exports = function listToStyles (parentId, list) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+class TimerMixin { // eslint-disable-line no-unused-vars
+  constructor (param) {
+    const evNamesDict = {
+      start: param.start,
+      stop: param.stop,
+      reset: param.reset
+    }
+    const tick = param.tick
+    this.data = function () {
+      return {
+        _mode: 'countup',
+        _evNamesDict: evNamesDict,
+        time: 0,
+        _lastTime: 0,
+        _lastStarted: null,
+        _lastPassed: null,
+        _tick: tick,
+        _handler: null
+      }
+    }
+    this.created = this._created
+    this.methods = {
+      start: this._start,
+      stop: this._stop,
+      reset: this._reset
+    }
+  }
+  _created () {
+    ['reset', 'stop', 'start'].forEach(evKey => {
+      if (this.$data._evNamesDict[evKey] != null) {
+        let evNames = this.$data._evNamesDict[evKey]
+        if (typeof evNames === 'string') {
+          evNames = [evNames]
+        }
+        if (Array.isArray(evNames)) {
+          evNames.forEach(evName => {
+            this.$on(evName, function () {
+              this[evKey].apply(this)
+              this.$emit('timer' + evName, {
+                time: this.time
+              })
+            })
+          })
+        }
+      }
+    })
+  }
+  _start () {
+    if (this.$data._handler != null) {
+      return
+    }
+    this.$data._lastStarted = Date.now()
+    this.$data._lastPassed = 0
+    this.$data._handler = setInterval(() => {
+      this.$data._lastPassed = Date.now() - this.$data._lastStarted
+      this.time = this.$data._lastTime + this.$data._lastPassed
+      this.$emit('tick', {
+        time: this.time
+      })
+    }, this.$data._tick)
+  }
+  _stop () {
+    if (this.$data._handler == null) {
+      return
+    }
+    this.$data._lastTime = this.$data._lastTime + Date.now() - this.$data._lastStarted
+    this.$data._lastStarted = null
+    this.$data._lastPassed = null
+    clearInterval(this.$data._handler)
+    this.$data._handler = null
+  }
+  _reset () {
+    if (this.$data._handler != null) {
+      this.$data._lastStarted = null
+      this.$data._lastPassed = null
+      clearInterval(this.$data._handler)
+      this.$data._handler = null
+    }
+    this.time = 0
+    this.$data._lastTime = 0
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (TimerMixin);
+
+
+/***/ }),
+/* 247 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* unused harmony export Store */
 /* unused harmony export install */
 /* unused harmony export mapState */
@@ -47680,7 +47771,7 @@ var index_esm = {
 
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -47708,10 +47799,10 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 248 */,
 /* 249 */,
 /* 250 */,
-/* 251 */
+/* 251 */,
+/* 252 */
 /***/ (function(module, exports) {
 
 /*
@@ -47793,7 +47884,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -48015,4 +48106,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.d27e119e558959907973.js.map
+//# sourceMappingURL=vendor.90ed86ab2ebc49ab1770.js.map
