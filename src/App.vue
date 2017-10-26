@@ -6,7 +6,7 @@
           <div class="message">
             <div class="you-scored">You Scored</div>
             <div class="score">{{formatTime(score)}}</div>
-            <div class="you-scored">@{{difficulty}} mode!!</div>
+            <div class="you-scored">in {{difficulty}} mode!!</div>
           </div>
           <div class="buttons">
             <!-- <button val="share">SHARE</button> -->
@@ -85,7 +85,7 @@ export default {
       let minute = Math.floor(sec / 60)
       ms = String(ms).padStart(3, '0')
       sec = String(sec % 60).padStart(2, '0')
-      minute = String(minute)
+      minute = String(minute).padStart(2, '0')
       return `${minute}:${sec}.${ms}`
     },
     onStart: function () {
@@ -204,6 +204,10 @@ mazeControl {
 
 .you-scored {
   font-size: 0.5em;
+}
+
+.buttons {
+  display: flex;
 }
 
 .pop-enter-active, .pop-leave-active {

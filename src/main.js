@@ -3,8 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store.js'
+import 'vue-github-buttons/dist/vue-github-buttons.css'
+import VueGitHubButtons from 'vue-github-buttons'
 
 Vue.config.productionTip = false
+Vue.use(VueGitHubButtons, {useCache: true})
 
 /* eslint-disable no-new */
 new Vue({
