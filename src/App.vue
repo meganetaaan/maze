@@ -11,6 +11,8 @@
           <div class="buttons">
             <!-- <button val="share">SHARE</button> -->
             <button val="next" @click="onClickNext">PLAY AGAIN</button>
+            <!-- Place this tag where you want the button to render. -->
+            <gh-btns-star slug="meganetaaan/vue-maze" show-count></gh-btns-star>
           </div>
         </div>
       </div>
@@ -78,9 +80,12 @@ export default {
       window.open('https://github.com/meganetaaan/maze')
     },
     formatTime: function (msec) {
-      const ms = String(Math.floor(msec % 1000)).padStart(3, 0)
-      const sec = String(Math.floor(msec / 1000)).padStart(2, 0)
-      const minute = String(Math.floor(sec / 60)).padStart(2, 0)
+      let ms = msec % 1000
+      let sec = Math.floor(msec / 1000)
+      let minute = Math.floor(sec / 60)
+      ms = String(ms).padStart(3, '0')
+      sec = String(sec % 60).padStart(2, '0')
+      minute = String(minute)
       return `${minute}:${sec}.${ms}`
     },
     onStart: function () {
