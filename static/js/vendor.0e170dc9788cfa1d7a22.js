@@ -40491,6 +40491,12 @@ module.exports = function normalizeComponent (
     }
   },
   computed: {
+    marginTop () {
+      return (this.height - this.ly * this.cellHeight) / 2
+    },
+    marginLeft () {
+      return (this.width - this.lx * this.cellWidth) / 2
+    },
     cellWidth () {
        switch (this.difficulty) {
           case 'easy':
@@ -40741,7 +40747,8 @@ module.exports = function normalizeComponent (
         this.$refs.playerCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
-        this.margin
+        this.marginLeft,
+        this.marginTop
       )
       const player = this.player
       playerRenderer.clear(this.width, this.height)
@@ -40758,7 +40765,8 @@ module.exports = function normalizeComponent (
         this.$refs.mazeCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
-        this.margin
+        this.marginLeft,
+        this.marginTop
       )
       const maze = this.maze
       const goal = maze.goal
@@ -40771,7 +40779,8 @@ module.exports = function normalizeComponent (
         this.$refs.effectCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
-        this.margin
+        this.marginLeft,
+        this.marginTop
       )
       effectRenderer.clear(this.width, this.height)
       // TODO: data
@@ -40790,7 +40799,8 @@ module.exports = function normalizeComponent (
           this.$refs.mazeCanvas.getContext('2d'),
           this.cellWidth,
           this.cellHeight,
-          this.margin
+          this.marginLeft,
+          this.marginTop
         )
         const { lx, ly, maze } = this
         const bondH = maze.bondH
@@ -51140,11 +51150,12 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACN
 
 "use strict";
 var Renderer = /** @class */ (function () {
-    function Renderer(ctx, unitWidth, unitHeight, offset) {
+    function Renderer(ctx, unitWidth, unitHeight, offsetLeft, offsetTop) {
         this.ctx = ctx;
         this.unitWidth = unitWidth;
         this.unitHeight = unitHeight;
-        this.offset = offset;
+        this.offsetLeft = offsetLeft;
+        this.offsetTop = offsetTop;
         this.wallWidth = 2;
     }
     // TODO: 境界を見直す
@@ -51164,8 +51175,8 @@ var Renderer = /** @class */ (function () {
     Renderer.prototype.drawImage = function (x, y, image) {
         var scaleX = this.unitWidth / image.width;
         var scaleY = this.unitHeight / image.height;
-        var cx = x * this.unitWidth / scaleX + (this.offset / scaleX);
-        var cy = y * this.unitHeight / scaleY + (this.offset / scaleY);
+        var cx = x * this.unitWidth / scaleX + (this.offsetLeft / scaleX);
+        var cy = y * this.unitHeight / scaleY + (this.offsetTop / scaleY);
         this.ctx.save();
         this.ctx.scale(scaleX, scaleY);
         this.ctx.imageSmoothingEnabled = false;
@@ -51174,8 +51185,8 @@ var Renderer = /** @class */ (function () {
     };
     Renderer.prototype.drawCircle = function (x, y, r) {
         this.ctx.beginPath();
-        var cx = x * this.unitWidth + this.unitWidth / 2 + this.offset;
-        var cy = y * this.unitHeight + this.unitHeight / 2 + this.offset;
+        var cx = x * this.unitWidth + this.unitWidth / 2 + this.offsetLeft;
+        var cy = y * this.unitHeight + this.unitHeight / 2 + this.offsetTop;
         r =
             r != null
                 ? r
@@ -51185,16 +51196,16 @@ var Renderer = /** @class */ (function () {
         this.ctx.stroke();
     };
     Renderer.prototype.drawLine = function (x1, y1, x2, y2) {
-        var fromX = this.offset + x1 * this.unitWidth;
-        var fromY = this.offset + y1 * this.unitHeight;
-        var toX = this.offset + x2 * this.unitWidth;
-        var toY = this.offset + y2 * this.unitHeight;
+        var fromX = this.offsetLeft + x1 * this.unitWidth;
+        var fromY = this.offsetTop + y1 * this.unitHeight;
+        var toX = this.offsetLeft + x2 * this.unitWidth;
+        var toY = this.offsetTop + y2 * this.unitHeight;
         this.ctx.moveTo(fromX, fromY);
         this.ctx.lineTo(toX, toY);
     };
     Renderer.prototype.drawText = function (text, x, y) {
-        var left = x * this.unitWidth + this.offset;
-        var top = y * this.unitHeight + this.offset;
+        var left = x * this.unitWidth + this.offsetLeft;
+        var top = y * this.unitHeight + this.offsetTop;
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(text, left, top);
     };
@@ -52587,4 +52598,4 @@ function applyToTag (styleElement, obj) {
 
 /***/ })
 ]);
-//# sourceMappingURL=vendor.3fae069204e9c86d2bfa.js.map
+//# sourceMappingURL=vendor.0e170dc9788cfa1d7a22.js.map
