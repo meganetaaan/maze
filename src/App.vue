@@ -21,6 +21,10 @@
       <span class="header-item title" @click="openRepository">Maze</span>
       <span class="header-item time">{{formatTime(time)}}</span>
       <span class="header-item best">{{bestTime}}</span>
+      <select class="header-item strategy" v-model="strategy">
+        <option value="cluster">Cluster</option>
+        <option value="dig">Dig</option>
+      </select>
       <select class="header-item difficulty" v-model="difficulty">
         <option value="easy">Easy</option>
         <option value="normal">Normal</option>
@@ -30,6 +34,7 @@
     <main>
       <maze
       :difficulty="difficulty"
+      :strategy="strategy"
       @start="onStart"
       @finish="onFinish"
       @init="onInit"
@@ -39,8 +44,9 @@
 </template>
 
 <script>
-import Maze from 'vue-maze'
+import Maze from '../../vue-maze/dist/vue-maze'
 import TimerMixin from 'vue-timer-mixin'
+import imagePath from './runner.png'
 
 const mixin = new TimerMixin({
   start: 'gameStart',
@@ -59,6 +65,7 @@ export default {
   ],
   data () {
     return {
+      strategy: 'cluster',
       difficulty: 'normal',
       bestTimes: {
         easy: null,
@@ -67,7 +74,8 @@ export default {
       },
       current: null,
       score: 0,
-      finished: false
+      finished: false,
+      imagePath: imagePath
     }
   },
   computed: {
@@ -77,7 +85,7 @@ export default {
   },
   methods: {
     openRepository () {
-      window.open('https://github.com/meganetaaan/maze')
+      window.open('https://github.com/meganetaaan/vue-maze')
     },
     formatTime: function (msec) {
       let ms = msec % 1000
@@ -161,6 +169,12 @@ header {
 }
 
 .time {
+  max-width: 200px;
+  flex-grow: 0;
+  margin: 0 2;
+}
+
+.strategy {
   max-width: 200px;
   flex-grow: 0;
   margin: 0 2;
