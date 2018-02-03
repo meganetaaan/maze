@@ -376,6 +376,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -396,8 +399,8 @@ var mixin = new __WEBPACK_IMPORTED_MODULE_1_vue_timer_mixin__["a" /* default */]
   mixins: [mixin],
   data: function data() {
     return {
-      strategy: 'cluster',
-      difficulty: 'normal',
+      strategy: 'dig',
+      difficulty: 'easy',
       bestTimes: {
         easy: null,
         normal: null,
@@ -528,10 +531,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "modal"
   }, [_c('div', {
+    staticClass: "modal-content"
+  }, [_c('div', {
     staticClass: "message"
   }, [_c('div', {
+    staticClass: "finish"
+  }, [_vm._v("FINISH!!")]), _vm._v(" "), _c('div', {
     staticClass: "you-scored"
-  }, [_vm._v("You Scored")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("You scored")]), _vm._v(" "), _c('div', {
     staticClass: "score"
   }, [_vm._v(_vm._s(_vm.formatTime(_vm.score)))]), _vm._v(" "), _c('div', {
     staticClass: "you-scored"
@@ -549,7 +556,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "slug": "meganetaaan/vue-maze",
       "show-count": ""
     }
-  })], 1)])]) : _vm._e()]), _vm._v(" "), _c('header', [_c('span', {
+  })], 1)])])]) : _vm._e()]), _vm._v(" "), _c('header', [_c('span', {
     staticClass: "header-item title",
     on: {
       "click": _vm.openRepository
@@ -716,7 +723,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_selector_type_script_index_0_Maze_vue__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_16f8fd4c_hasScoped_true_node_modules_vue_loader_lib_selector_type_template_index_0_Maze_vue__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_16f8fd4c_hasScoped_true_node_modules_vue_loader_lib_selector_type_template_index_0_Maze_vue__ = __webpack_require__(14);
 function injectStyle (ssrContext) {
   __webpack_require__(1)
 }
@@ -1213,7 +1220,9 @@ module.exports = function normalizeComponent (
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__getMaze2__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tori_png__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tori_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__tori_png__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Renderer__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__flag_png__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__flag_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__flag_png__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Renderer__ = __webpack_require__(13);
 //
 //
 //
@@ -1230,6 +1239,8 @@ module.exports = function normalizeComponent (
 //
 //
 //
+//
+
 
 
 
@@ -1256,6 +1267,7 @@ const strategy = {
       height: null,
       margin: 5,
       image: null,
+      goalImage: null,
       maze: {
         bondH: [],
         bondV: [],
@@ -1280,6 +1292,10 @@ const strategy = {
     },
     imagePath: {
       default: __WEBPACK_IMPORTED_MODULE_3__tori_png___default.a,
+      type: String
+    },
+    goalImagePath: {
+      default: __WEBPACK_IMPORTED_MODULE_4__flag_png___default.a,
       type: String
     },
     strategy: {
@@ -1353,6 +1369,12 @@ const strategy = {
     })
     image.src = this.imagePath
 
+    const goalImage = new Image()
+    goalImage.addEventListener('load', () => {
+      this.goalImage = goalImage
+    })
+    goalImage.src = this.goalImagePath
+
     window.addEventListener('resize', () => {
       this.height = this.$el.offsetHeight
       this.width = this.$el.offsetWidth
@@ -1380,6 +1402,9 @@ const strategy = {
     },
     image () {
       this.renderPlayer()
+    },
+    goalImage () {
+      this.renderGoal()
     },
     strategy () {
       this.$emit('init')
@@ -1545,7 +1570,7 @@ const strategy = {
       }
     },
     renderPlayer () {
-      const playerRenderer = new __WEBPACK_IMPORTED_MODULE_4__Renderer__["a" /* default */](
+      const playerRenderer = new __WEBPACK_IMPORTED_MODULE_5__Renderer__["a" /* default */](
         this.$refs.playerCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
@@ -1563,8 +1588,8 @@ const strategy = {
       }
     },
     renderGoal () {
-      const renderer = new __WEBPACK_IMPORTED_MODULE_4__Renderer__["a" /* default */](
-        this.$refs.mazeCanvas.getContext('2d'),
+      const renderer = new __WEBPACK_IMPORTED_MODULE_5__Renderer__["a" /* default */](
+        this.$refs.goalCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
         this.marginLeft,
@@ -1572,12 +1597,17 @@ const strategy = {
       )
       const maze = this.maze
       const goal = maze.goal
-      renderer.ctx = this.$refs.mazeCanvas.getContext('2d')
+      renderer.ctx = this.$refs.goalCanvas.getContext('2d')
+      renderer.clear(this.width, this.height)
       renderer.setColor('#4CAF50', '#222')
-      renderer.drawCircle(goal.x, goal.y)
+      if (this.goalImage != null) {
+        renderer.drawImage(goal.x, goal.y, this.goalImage)
+      } else {
+        renderer.drawCircle(goal.x, goal.y)
+      }
     },
     renderConguraturations () {
-      const effectRenderer = new __WEBPACK_IMPORTED_MODULE_4__Renderer__["a" /* default */](
+      const effectRenderer = new __WEBPACK_IMPORTED_MODULE_5__Renderer__["a" /* default */](
         this.$refs.effectCanvas.getContext('2d'),
         this.cellWidth,
         this.cellHeight,
@@ -1597,7 +1627,7 @@ const strategy = {
     },
     renderMaze () {
       this.$nextTick(() => {
-        const renderer = new __WEBPACK_IMPORTED_MODULE_4__Renderer__["a" /* default */](
+        const renderer = new __WEBPACK_IMPORTED_MODULE_5__Renderer__["a" /* default */](
           this.$refs.mazeCanvas.getContext('2d'),
           this.cellWidth,
           this.cellHeight,
@@ -1891,6 +1921,12 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACN
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAYElEQVR42mNgoCP4Ly0t/R9EI2HKDHz79i3YoDfxEEypwRgGYjH4P1UMJNdwogxEM3jUQBwGImNqGYgijicpkWUgVoOpYSCKwSQlbKoVDoPawP9Ykg3lBlK1LKS2gWQDALw+C1ZIx81EAAAAAElFTkSuQmCC"
+
+/***/ }),
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1960,11 +1996,11 @@ var Renderer = /** @class */ (function () {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze",attrs:{"tabindex":"-1"},on:{"keyup":_vm.onKeyUp}},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchstart":_vm.onTouchStart,"touchmove":_vm.onTouchMove,"touchend":_vm.onTouchEnd,"mousemove":_vm.onMouseMove}}),_vm._v(" "),(_vm.cache)?_c('div',{style:(_vm.dotStyle)}):_vm._e()])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"maze",attrs:{"tabindex":"-1"},on:{"keyup":_vm.onKeyUp}},[_c('canvas',{ref:"mazeCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"goalCanvas",attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"effectCanvas",style:(_vm.effectStyle),attrs:{"width":_vm.width,"height":_vm.height}}),_vm._v(" "),_c('canvas',{ref:"playerCanvas",attrs:{"width":_vm.width,"height":_vm.height},on:{"touchstart":_vm.onTouchStart,"touchmove":_vm.onTouchMove,"touchend":_vm.onTouchEnd,"mousemove":_vm.onMouseMove}}),_vm._v(" "),(_vm.cache)?_c('div',{style:(_vm.dotStyle)}):_vm._e()])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -12197,4 +12233,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[150]);
-//# sourceMappingURL=app.48602ad035c0ba9582de.js.map
+//# sourceMappingURL=app.c1b8a3b557ab3b9d2dd6.js.map
