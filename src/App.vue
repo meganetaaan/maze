@@ -3,16 +3,19 @@
     <transition name="pop">
       <div class="overlay" v-if="finished">
         <div class="modal">
-          <div class="message">
-            <div class="you-scored">You Scored</div>
-            <div class="score">{{formatTime(score)}}</div>
-            <div class="you-scored">in {{difficulty}} mode!!</div>
-          </div>
-          <div class="buttons">
-            <!-- <button val="share">SHARE</button> -->
-            <button val="next" @click="onClickNext">PLAY AGAIN</button>
-            <!-- Place this tag where you want the button to render. -->
-            <gh-btns-star slug="meganetaaan/vue-maze" show-count></gh-btns-star>
+          <div class="modal-content">
+            <div class="message">
+              <div class="finish">FINISH!!</div>
+              <div class="you-scored">You scored</div>
+              <div class="score">{{formatTime(score)}}</div>
+              <div class="you-scored">in {{difficulty}} mode!!</div>
+            </div>
+            <div class="buttons">
+              <!-- <button val="share">SHARE</button> -->
+              <button val="next" @click="onClickNext">PLAY AGAIN</button>
+              <!-- Place this tag where you want the button to render. -->
+              <gh-btns-star slug="meganetaaan/vue-maze" show-count></gh-btns-star>
+            </div>
           </div>
         </div>
       </div>
@@ -65,8 +68,8 @@ export default {
   ],
   data () {
     return {
-      strategy: 'cluster',
-      difficulty: 'normal',
+      strategy: 'dig',
+      difficulty: 'easy',
       bestTimes: {
         easy: null,
         normal: null,
@@ -150,6 +153,7 @@ header {
   color: #ffffff;
   display: flex;
   align-items: center;
+  box-shadow: 0 1.5px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .header-item {
@@ -203,31 +207,55 @@ mazeControl {
   z-index: 10;
 }
 
+.finish {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #222;
+}
+
 .modal {
+  background-color: #F8F8F8;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  z-index: 11;
+  color: #666;
+}
+
+.modal-content {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #F8F8F8;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-size: 2em;
-  z-index: 11;
   padding: 12px 20px;
-  color: #222;
+}
+
+.score {
+  font-size: 0.7em;
 }
 
 .you-scored {
-  font-size: 0.5em;
+  font-size: 0.7em;
 }
 
 .buttons {
   display: flex;
 }
 
-.pop-enter-active, .pop-leave-active {
-  transition: opacity .3s
+.pop-enter-active {
+  animation: pop-in .4s;
 }
-.pop-enter, .pop-leave-to {
-  opacity: 0
+.pop-leave-active {
+  animation: pop-in .4s reverse;
+}
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
