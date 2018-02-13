@@ -1,24 +1,28 @@
 <template>
   <div id="app">
+    <transition name="fade">
+    <div class="overlay" v-if="finished">
+    </div>
+    </transition>
     <transition name="pop">
-      <div class="overlay" v-if="finished">
-        <div class="modal">
-          <div class="modal-content">
-            <div class="message">
-              <div class="finish">FINISH!!</div>
-              <div class="you-scored">You scored</div>
-              <div class="score">{{formatTime(score)}}</div>
-              <div class="you-scored">in {{difficulty}} mode!!</div>
-            </div>
-            <div class="buttons">
-              <!-- <button val="share">SHARE</button> -->
-              <button val="next" @click="onClickNext">PLAY AGAIN</button>
-              <!-- Place this tag where you want the button to render. -->
-              <gh-btns-star slug="meganetaaan/vue-maze" show-count></gh-btns-star>
-            </div>
+    <div class="modal-layer" v-if="finished">
+      <div class="modal" v-if="finished">
+        <div class="modal-content">
+          <div class="message">
+            <div class="finish">FINISH!!</div>
+            <div class="you-scored">You scored</div>
+            <div class="score">{{formatTime(score)}}</div>
+            <div class="you-scored">in {{difficulty}} mode!!</div>
+          </div>
+          <div class="buttons">
+            <!-- <button val="share">SHARE</button> -->
+            <button val="next" @click="onClickNext">PLAY AGAIN</button>
+            <!-- Place this tag where you want the button to render. -->
+            <gh-btns-star slug="meganetaaan/vue-maze" show-count></gh-btns-star>
           </div>
         </div>
       </div>
+    </div>
     </transition>
     <header>
       <span class="header-item title" @click="openRepository">Maze</span>
@@ -198,13 +202,20 @@ mazeControl {
 
 .overlay {
   position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.modal-layer {
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0);
-  z-index: 10;
+  z-index: 100;
 }
 
 .finish {
@@ -227,6 +238,7 @@ mazeControl {
   flex-direction: column;
   font-size: 2em;
   padding: 12px 20px;
+  min-width: 210px;
 }
 
 .score {
@@ -241,11 +253,26 @@ mazeControl {
   display: flex;
 }
 
+.fade-enter-active {
+  animation: fade-in .4s;
+}
+.fade-leave-active {
+  animation: fade-in .4s reverse;
+}
+
 .pop-enter-active {
   animation: pop-in .4s;
 }
 .pop-leave-active {
   animation: pop-in .4s reverse;
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 @keyframes pop-in {
   0% {
