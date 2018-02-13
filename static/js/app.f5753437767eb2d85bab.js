@@ -379,6 +379,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -524,11 +528,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('transition', {
     attrs: {
-      "name": "pop"
+      "name": "fade"
     }
   }, [(_vm.finished) ? _c('div', {
     staticClass: "overlay"
-  }, [_c('div', {
+  }) : _vm._e()]), _vm._v(" "), _c('transition', {
+    attrs: {
+      "name": "pop"
+    }
+  }, [(_vm.finished) ? _c('div', {
+    staticClass: "modal-layer"
+  }, [(_vm.finished) ? _c('div', {
     staticClass: "modal"
   }, [_c('div', {
     staticClass: "modal-content"
@@ -556,7 +566,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "slug": "meganetaaan/vue-maze",
       "show-count": ""
     }
-  })], 1)])])]) : _vm._e()]), _vm._v(" "), _c('header', [_c('span', {
+  })], 1)])]) : _vm._e()]) : _vm._e()]), _vm._v(" "), _c('header', [_c('span', {
     staticClass: "header-item title",
     on: {
       "click": _vm.openRepository
@@ -12233,4 +12243,4 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /***/ })
 
 },[150]);
-//# sourceMappingURL=app.c1b8a3b557ab3b9d2dd6.js.map
+//# sourceMappingURL=app.f5753437767eb2d85bab.js.map
