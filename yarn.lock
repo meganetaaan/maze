@@ -6814,6 +6814,11 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
+vue-confetti@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/vue-confetti/-/vue-confetti-0.4.2.tgz#37857936d387b3f8482afed34e2ea9dd5d267e49"
+  integrity sha512-hpvQcnG29n27eirq0etS/qwZ2wP+Ak2TIeeXTfQ4kJsrI8/haeQ9MUF9a3D5TwH9FZEgPLJQYXAddZwK1lFGDQ==
+
 vue-github-buttons@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/vue-github-buttons/-/vue-github-buttons-2.0.5.tgz#f4da325fb397a5b703084394f35acd63dfc33ee1"
