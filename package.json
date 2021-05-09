@@ -16,7 +16,7 @@
     "deploy": "npm run build; gh-pages -d dist"
   },
   "dependencies": {
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "vue": "^2.5.13",
     "vue-confetti": "^0.4.2",
     "vue-github-buttons": "^2.0.5",
